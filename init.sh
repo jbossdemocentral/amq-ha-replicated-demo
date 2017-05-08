@@ -3,8 +3,8 @@ DEMO="JBoss AMQ 7 Replicated HA Demo"
 VERSION=7.0.0
 AUTHORS="Hugo Guerrero"
 PROJECT="git@github.com:hguerrero/amq-ha-replicated-demo.git"
-AMQ=A-MQ7-7.0.0.ER15-1-redhat-1
-AMQ_BIN=A-MQ7-7.0.0.ER15-1-redhat-1-bin.zip
+AMQ=jboss-amq-7.0.0.redhat-1
+AMQ_BIN=jboss-amq-7.0.0.redhat-1-bin.zip
 DEMO_HOME=./target
 AMQ_HOME=$DEMO_HOME/$AMQ
 AMQ_PROJECT=./project/failoverdemo62
@@ -14,7 +14,7 @@ AMQ_INSTANCES=$AMQ_HOME/instances
 AMQ_MASTER=replicatedMaster
 AMQ_SLAVE=replicatedSlave
 AMQ_MASTER_HOME=$AMQ_INSTANCES/$AMQ_MASTER
-AMQ_SLAVE_HOME=$AMQ_INSTANCES/$AMQ_MASTER
+AMQ_SLAVE_HOME=$AMQ_INSTANCES/$AMQ_SLAVE
 SRC_DIR=./installs
 PRJ_DIR=./projects/failoverdemo62
 
@@ -31,11 +31,13 @@ echo "##                                                             ##"
 echo "##  Setting up the ${DEMO}              ##"
 echo "##                                                             ##"
 echo "##                                                             ##"
-echo "##                #####  #   #  #####  #####                   ##"
-echo "##                #      #   #  #      #                       ##"
-echo "##                #####  #   #  #####  ####                    ##"
-echo "##                #      #   #      #  #                       ##"
-echo "##                #      #####  #####  #####                   ##"
+echo "##                   ###    ##     ##  #######                 ##"
+echo "##                  ## ##   ###   ### ##     ##                ##"
+echo "##                 ##   ##  #### #### ##     ##                ##"
+echo "##                ##     ## ## ### ## ##     ##                ##"
+echo "##                ######### ##     ## ##  ## ##                ##"
+echo "##                ##     ## ##     ## ##    ##                 ##"
+echo "##                ##     ## ##     ##  ##### ##                ##"
 echo "##                                                             ##"
 echo "##                                                             ##"
 echo "##  brought to you by,                                         ##"
@@ -124,23 +126,48 @@ echo "  - Start up AMQ Master in the background"
 echo
 sh $AMQ_MASTER_HOME/bin/artemis-service start
 
-echo "  - Create haQueue on master broker"
-echo
-sh $AMQ_MASTER_HOME/bin/artemis queue create --auto-create-address --address haQueue --name haQueue --keep-on-no-consumers --durable --anycast --url tcp://localhost:61616
 
-
-sleep 15
+sleep 10
 
 COUNTER=5
-#===Test if the fabric is ready=====================================
-echo "  - Testing fabric,retry when not ready"
+#===Test if the broker is ready=====================================
+echo "  - Testing broker,retry when not ready"
 while true; do
-    if [ $(sh $AMQ_SERVER_BIN/client 'fabric:status'| grep "100%" | wc -l ) -ge 3 ]; then
+    if [ $(sh $AMQ_MASTER_HOME/bin/artemis-service status | grep "running" | wc -l ) -ge 1 ]; then
         break
     fi
 
     if [  $COUNTER -le 0 ]; then
-    	echo ERROR, while creating Fabric, please check your Network settings.
+    	echo ERROR, while starting broker, please check your settings.
+    	break
+    fi
+    let COUNTER=COUNTER-1
+    sleep 2
+done
+#===================================================================
+
+echo "  - Create haQueue on master broker"
+echo
+sh $AMQ_MASTER_HOME/bin/artemis queue create --auto-create-address --address haQueue --name haQueue --preserve-on-no-consumers --durable --anycast --url tcp://localhost:61616
+
+
+echo "  - Start up AMQ Slave in the background"
+echo
+sh $AMQ_SLAVE_HOME/bin/artemis-service start
+
+
+sleep 10
+
+COUNTER=5
+#===Test if the broker is ready=====================================
+echo "  - Testing broker,retry when not ready"
+while true; do
+    if [ $(sh $AMQ_SLAVE_HOME/bin/artemis-service status | grep "running" | wc -l ) -ge 1 ]; then
+        break
+    fi
+
+    if [  $COUNTER -le 0 ]; then
+    	echo ERROR, while starting broker, please check your settings.
     	break
     fi
     let COUNTER=COUNTER-1
@@ -149,19 +176,5 @@ done
 #===================================================================
 
 
-
-echo "Go to Project directory"
-echo
-cd $AMQ_PROJECT
-
-echo "Start compile and deploy failover camel example project to fuse"
-echo
-mvn fabric8:deploy
-
-
-cd ../..
-
-
-
-echo "To stop the backgroud AMQ process, please go to bin and execute stop"
+echo "To stop the backgroud AMQ broker processes, please go to bin folders and execute 'artemis-service stop'"
 echo
