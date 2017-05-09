@@ -1,6 +1,9 @@
 # Red Hat AMQ 7 High Availability Replicated Demo (Shared Nothing)
 
-Red Hat JBoss AMQ 7 provides fast, lightweight, and secure messaging for Internet-scale applications. This is a demostration of the new JBoss AMQ 7 replicated high availability feature to avoid using a shared store.
+### Introduction
+Red Hat JBoss AMQ 7 provides fast, lightweight, and secure messaging for Internet-scale applications. AMQ 7 components use industry-standard message protocols and support a wide range of programming languages and operating environments. AMQ 7 gives you the strong foundation you need to build modern distributed applications.
+
+This is a demostration of the new JBoss AMQ 7 replicated high availability feature to avoid using a shared store.
 
 ## Overview
 This project demostrate how to set up a master-slave high available broker using the replicated journal feature.
@@ -110,3 +113,7 @@ $ target/jboss-amq-7.0.0.redhat-1/instances/replicatedMaster/bin/artemis-service
 ```
 
 The master will start and check if there is a live broker, when the backup detects that the master has become availbale again, it failsback going in a backup mode again.
+
+## Contributing
+
+We welcome all forms of contribution (content, issues/bugs, feedback).
