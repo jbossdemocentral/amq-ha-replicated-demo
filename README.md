@@ -1,6 +1,6 @@
 # Red Hat AMQ 7 High Availability Replicated Demo (Shared Nothing)
 
-### Introduction
+## Introduction
 Red Hat JBoss AMQ 7 provides fast, lightweight, and secure messaging for Internet-scale applications. AMQ 7 components use industry-standard message protocols and support a wide range of programming languages and operating environments. AMQ 7 gives you the strong foundation you need to build modern distributed applications.
 
 This is a demostration of the new JBoss AMQ 7 replicated high availability feature to avoid using a shared store.
