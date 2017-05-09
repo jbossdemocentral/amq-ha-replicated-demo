@@ -47,3 +47,66 @@ First, execute the *init.sh* script
 ```
 ./init.sh
 ```
+
+After successfully deployed, you can test the failover
+
+## Testing
+
+#### Sending messages
+
+To send messages to the master broker, execute the following command:
+
+```
+$ target/jboss-amq-7.0.0.redhat-1/instances/replicatedMaster/bin/artemis producer --message-count 10 --url "udp://231.7.7.7:9876" --destination queue://haQueue
+```
+
+#### Browse messages on Master
+
+To check the messages were successfully send to the broker, check the queue in the broker web console.
+
+* Open a web browser and navigate to the AMQ web console http://localhost:8161/hawtio
+* In the left tree navigate to 127.0.0.1 > addresses > haQueue > queues > anycast > haQueue
+* Click on *Browse* (refresh if necessary)
+
+You will see the 10 messages send by the producer script.
+
+#### Browse backup Console
+
+As the replicatedSlave broker is running as a backup broker for replicatedMaster, there are no active addresses or queues listening.
+
+* Open a web browser and navigate to the AMQ web console http://localhost:8261/hawtio
+* In the left tree navigate to 127.0.0.1 > addresses > haQueue > queues > anycast > haQueue
+
+You will only see the information regarding the cluster broadcast configuration.
+
+## Failover
+
+#### Master shutdown
+
+To shutdown the master broker, execute the following command:
+
+```
+$ target/jboss-amq-7.0.0.redhat-1/instances/replicatedMaster/bin/artemis-service stop
+```
+
+While the master is shutting down, the backup broker will notice the disconnection from the master and bwill become live.
+
+#### Browse messages on Slave
+
+To check the messages were successfully replicated to the slave broker, check the queue in the slave broker web console.
+
+* Refresh the AMQ web console http://localhost:8261/hawtio
+* In the left tree navigate to 127.0.0.1 > addresses > haQueue > queues > anycast > haQueue
+* Click on *Browse* (refresh if necessary)
+
+You will see the 10 messages send by the producer script to the master broker.
+
+## Failback
+
+If you want, you can start again the replicatedMaster broker to see how the backup failbacks to the master.
+
+```
+$ target/jboss-amq-7.0.0.redhat-1/instances/replicatedMaster/bin/artemis-service start
+```
+
+The master will start and check if there is a live broker, when the backup detects that the master has become availbale again, it failsback going in a backup mode again.

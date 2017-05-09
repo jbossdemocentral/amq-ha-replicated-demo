@@ -110,7 +110,7 @@ sh $AMQ_SERVER_BIN/artemis create --replicated --failover-on-shutdown  --user ad
 
 echo "  - Change default configuration to avoid duplicated live broker when failingback"
 echo
-sh sed -i 's#<master/>#<master><check-for-live-server>true</check-for-live-server></master>#' $AMQ_INSTANCES/$AMQ_MASTER/etc/broker.xml
+sed -i 's#<master/>#<master><check-for-live-server>true</check-for-live-server></master>#' $AMQ_MASTER_HOME/etc/broker.xml
 
 
 echo "  - Create Replicated Slave"
@@ -119,7 +119,7 @@ sh $AMQ_SERVER_BIN/artemis create --replicated --failover-on-shutdown --slave --
 
 echo "  - Change default configuration to automate failback"
 echo
-sh sed -i 's#<slave/>#<slave><check-for-live-server>true</check-for-live-server></slave>#' $AMQ_INSTANCES/$AMQ_SLAVE/etc/broker.xml
+sed -i 's#<slave/>#<slave><allow-failback>true</allow-failback></slave>#' $AMQ_SLAVE_HOME/etc/broker.xml
 
 
 echo "  - Start up AMQ Master in the background"
@@ -146,11 +146,6 @@ while true; do
 done
 #===================================================================
 
-echo "  - Create haQueue on master broker"
-echo
-sh $AMQ_MASTER_HOME/bin/artemis queue create --auto-create-address --address haQueue --name haQueue --preserve-on-no-consumers --durable --anycast --url tcp://localhost:61616
-
-
 echo "  - Start up AMQ Slave in the background"
 echo
 sh $AMQ_SLAVE_HOME/bin/artemis-service start
@@ -174,6 +169,10 @@ while true; do
     sleep 2
 done
 #===================================================================
+
+echo "  - Create haQueue on master broker"
+echo
+sh $AMQ_MASTER_HOME/bin/artemis queue create --auto-create-address --address haQueue --name haQueue --preserve-on-no-consumers --durable --anycast --url tcp://localhost:61616
 
 
 echo "To stop the backgroud AMQ broker processes, please go to bin folders and execute 'artemis-service stop'"
