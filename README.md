@@ -1,12 +1,22 @@
 # Red Hat AMQ 7 High Availability Replicated Demo (Shared Nothing)
 
 ## Introduction
-Red Hat JBoss AMQ 7 provides fast, lightweight, and secure messaging for Internet-scale applications. AMQ 7 components use industry-standard message protocols and support a wide range of programming languages and operating environments. AMQ 7 gives you the strong foundation you need to build modern distributed applications.
+Red Hat JBoss AMQ 7 provides fast, lightweight, and secure messaging for Internet-scale applications. AMQ 7 components use industry-standard message protocols and support a wide range of programming languages and operating environments. AMQ 7 gives you the strong foundation you need to build modern distributed applications. Multiple instances of AMQ 7 brokers can be grouped together to share message processing load. Each broker manages its own messages and connections and is connected to other brokers with "cluster bridges" that are used to send topology information, such as queues and consumers, as well as load balancing messages. AMQ 7 supports two different strategies for backing up a server: shared store and replication.
 
-This is a demostration of the new JBoss AMQ 7 replicated high availability feature to avoid using a shared store.
+This is a demostration of the new AMQ 7 replicated high availability feature to avoid using a shared store.
 
 ## Overview
-This project demostrate how to set up a master-slave high available broker using the replicated journal feature.
+Red Hat JBoss AMQ 7 allows servers to be linked together as live - backup groups where each live server can have 1 or more backup servers. A backup server is owned by only one live server. Backup servers are not operational until failover occurs, however 1 chosen backup, which will be in passive mode, announces its status and waits to take over the live servers work.
+
+Before failover, only the live server is serving the AMQ clients while the backup servers remain passive or awaiting to become a backup server. When a live server crashes or is brought down in the correct mode, the backup server currently in passive mode will become live and another backup server will become passive. If a live server restarts after a failover then it will have priority and be the next server to become live when the current live server goes down, if the current live server is configured to allow automatic failback then it will detect the live server coming back up and automatically stop.
+
+When using replication, the live and the backup servers do not share the same data directories, all data synchronization is done over the network. Therefore all (persistent) data received by the live server will be duplicated to the backup.
+
+![high availability diagram](docs/images/amq-ha-replicated.png?raw=true "HA Architecture Diagram")
+
+Notice that upon start-up the backup server will first need to synchronize all existing data from the live server before becoming capable of replacing the live server should it fail. So unlike when using shared storage, a replicating backup will not be a fully operational backup right after start-up, but only after it finishes synchronizing the data with its live server.
+
+This project demostrate how to set up a 2 clustered brokers using CLI and the replicated journal feature.
 
 ## Prerequisites
 This workshop requires you to use your own laptop and have the following prerequisites installed:
