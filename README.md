@@ -60,7 +60,7 @@ After successfully deployed, you can test the failover
 To send messages to the master broker, execute the following command:
 
 ```
-$ target/jboss-amq-7.0.0.redhat-1/instances/replicatedMaster/bin/artemis producer --message-count 10 --url "udp://231.7.7.7:9876" --destination queue://haQueue
+$ target/jboss-amq-7.0.0.redhat-1/instances/replicatedMaster/bin/artemis producer --message-count 10 --url "tcp://127.0.0.1:61616" --destination queue://haQueue
 ```
 
 #### Browse messages on Master

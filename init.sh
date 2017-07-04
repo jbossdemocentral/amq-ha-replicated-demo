@@ -106,21 +106,31 @@ chmod u+x $AMQ_HOME/bin/artemis
 
 echo "  - Create Replicated Master"
 echo
-sh $AMQ_SERVER_BIN/artemis create --replicated --failover-on-shutdown  --user admin --password password --role admin --allow-anonymous y --clustered --host 127.0.0.1 --cluster-user clusterUser --cluster-password clusterPassword  --max-hops 1 $AMQ_INSTANCES/$AMQ_MASTER
+sh $AMQ_SERVER_BIN/artemis create --no-autotune --replicated --failover-on-shutdown  --user admin --password password --role admin --allow-anonymous y --clustered --host 127.0.0.1 --cluster-user clusterUser --cluster-password clusterPassword  --max-hops 1 $AMQ_INSTANCES/$AMQ_MASTER
 
 echo "  - Change default configuration to avoid duplicated live broker when failingback"
 echo
-sed -i 's#<master/>#<master><check-for-live-server>true</check-for-live-server></master>#' $AMQ_MASTER_HOME/etc/broker.xml
+sed -i 's/<master\/>/<master>\n\                <check-for-live-server>true<\/check-for-live-server>\n\            <\/master>/' $AMQ_MASTER_HOME/etc/broker.xml
 
+echo "  - Changing default master clustering configuration"
+echo
+sed -i '/<broadcast-groups>/,/<\/discovery-groups>/d' $AMQ_MASTER_HOME/etc/broker.xml
+sed -i '/<\/connector>/ a \        <connector name="discovery-connector">tcp://127.0.0.1:61716</connector>' $AMQ_MASTER_HOME/etc/broker.xml
+sed -i 's/<discovery-group-ref discovery-group-name="dg-group1"\/>/<static-connectors>\n   <connector-ref>discovery-connector<\/connector-ref>\n<\/static-connectors>/' $AMQ_MASTER_HOME/etc/broker.xml
 
 echo "  - Create Replicated Slave"
 echo
-sh $AMQ_SERVER_BIN/artemis create --replicated --failover-on-shutdown --slave --user admin --password password --role admin --allow-anonymous y --clustered --host 127.0.0.1 --cluster-user clusterUser --cluster-password clusterPassword  --max-hops 1 --port-offset 100 $AMQ_INSTANCES/$AMQ_SLAVE
+sh $AMQ_SERVER_BIN/artemis create --no-autotune --replicated --failover-on-shutdown --slave --user admin --password password --role admin --allow-anonymous y --clustered --host 127.0.0.1 --cluster-user clusterUser --cluster-password clusterPassword  --max-hops 1 --port-offset 100 $AMQ_INSTANCES/$AMQ_SLAVE
 
 echo "  - Change default configuration to automate failback"
 echo
-sed -i 's#<slave/>#<slave><allow-failback>true</allow-failback></slave>#' $AMQ_SLAVE_HOME/etc/broker.xml
+sed -i 's/<slave\/>/<slave>\n\                <allow-failback>true<\/allow-failback>\n\            <\/slave>/' $AMQ_SLAVE_HOME/etc/broker.xml
 
+echo "  - Changing default master clustering configuration"
+echo
+sed -i '/<broadcast-groups>/,/<\/discovery-groups>/d' $AMQ_SLAVE_HOME/etc/broker.xml
+sed -i '/<\/connector>/ a \        <connector name="discovery-connector">tcp://127.0.0.1:61616</connector>' $AMQ_SLAVE_HOME/etc/broker.xml
+sed -i 's/<discovery-group-ref discovery-group-name="dg-group1"\/>/<static-connectors>\n   <connector-ref>discovery-connector<\/connector-ref>\n<\/static-connectors>/' $AMQ_SLAVE_HOME/etc/broker.xml
 
 echo "  - Start up AMQ Master in the background"
 echo
