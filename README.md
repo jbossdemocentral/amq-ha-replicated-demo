@@ -49,6 +49,12 @@ $ sudo yum install java-1.8.0-openjdk-devel git
 
 ## Deployment
 
+Git clone this repository and then change directory to amq-ha-replicated-dem.
+
+Download AMQ 7 Broker from Red Hat Developer Portal: --[download here](https://developers.redhat.com/products/amq/download/)
+
+Place the downloaded amq zip in the installs directory.
+
 This demo can be deployed using the automated installation based on the [init.sh](init.sh) script.
 
 #### Using the script
