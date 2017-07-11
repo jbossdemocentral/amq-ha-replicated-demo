@@ -114,6 +114,7 @@ sed -i'' -e 's/<master\/>/<master>\                <check-for-live-server>true<\
 
 echo "  - Changing default master clustering configuration"
 echo
+sed -i'' -e 's/<max-disk-usage>90<\/max-disk-usage>/<max-disk-usage>100<\/max-disk-usage>/' $AMQ_MASTER_HOME/etc/broker.xml
 sed -i'' -e '/<broadcast-groups>/,/<\/discovery-groups>/d' $AMQ_MASTER_HOME/etc/broker.xml
 sed -i'' -e '/<\/connector>/ a \
         <connector name="discovery-connector">tcp://127.0.0.1:61716</connector>' $AMQ_MASTER_HOME/etc/broker.xml
@@ -129,6 +130,7 @@ sed -i'' -e 's/<slave\/>/<slave>\                <allow-failback>true<\/allow-fa
 
 echo "  - Changing default master clustering configuration"
 echo
+sed -i'' -e 's/<max-disk-usage>90<\/max-disk-usage>/<max-disk-usage>100<\/max-disk-usage>/' $AMQ_SLAVE_HOME/etc/broker.xml
 sed -i'' -e '/<broadcast-groups>/,/<\/discovery-groups>/d' $AMQ_SLAVE_HOME/etc/broker.xml
 sed -i'' -e '/<\/connector>/ a \
         <connector name="discovery-connector">tcp://127.0.0.1:61616</connector>' $AMQ_SLAVE_HOME/etc/broker.xml
