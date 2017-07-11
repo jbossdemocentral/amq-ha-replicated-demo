@@ -1,13 +1,13 @@
 #!/bin/sh
 DEMO="JBoss AMQ 7 Replicated HA Demo"
-VERSION=7.0.0
+VERSION=7.0.1
 AUTHORS="Hugo Guerrero"
 PROJECT="git@github.com:hguerrero/amq-ha-replicated-demo.git"
-AMQ=jboss-amq-7.0.0.redhat-1
-AMQ_BIN=jboss-amq-7.0.0.redhat-1-bin.zip
+AMQ=amq-broker-7.0.1
+AMQ_BIN=amq-broker-7.0.1-bin.zip
 DEMO_HOME=./target
 AMQ_HOME=$DEMO_HOME/$AMQ
-AMQ_PROJECT=./project/failoverdemo62
+AMQ_PROJECT=./project/failoverdemo70
 AMQ_SERVER_CONF=$AMQ_HOME/etc
 AMQ_SERVER_BIN=$AMQ_HOME/bin
 AMQ_INSTANCES=$AMQ_HOME/instances
@@ -16,7 +16,7 @@ AMQ_SLAVE=replicatedSlave
 AMQ_MASTER_HOME=$AMQ_INSTANCES/$AMQ_MASTER
 AMQ_SLAVE_HOME=$AMQ_INSTANCES/$AMQ_SLAVE
 SRC_DIR=./installs
-PRJ_DIR=./projects/failoverdemo62
+PRJ_DIR=./projects/failoverdemo70
 
 # wipe screen.
 clear
