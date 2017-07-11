@@ -70,7 +70,7 @@ After successfully deployed, you can test the failover
 To send messages to the master broker, execute the following command:
 
 ```
-$ target/jboss-amq-7.0.0.redhat-1/instances/replicatedMaster/bin/artemis producer --message-count 10 --url "tcp://127.0.0.1:61616" --destination queue://haQueue
+$ target/amq-broker-7.0.1/instances/replicatedMaster/bin/artemis producer --message-count 10 --url "tcp://127.0.0.1:61616" --destination queue://haQueue
 ```
 
 #### Browse messages on Master
@@ -99,7 +99,7 @@ You will only see the information regarding the cluster broadcast configuration.
 To shutdown the master broker, execute the following command:
 
 ```
-$ target/jboss-amq-7.0.0.redhat-1/instances/replicatedMaster/bin/artemis-service stop
+$ target/amq-broker-7.0.1/instances/replicatedMaster/bin/artemis-service stop
 ```
 
 While the master is shutting down, the backup broker will notice the disconnection from the master and bwill become live.
@@ -119,7 +119,7 @@ You will see the 10 messages send by the producer script to the master broker.
 If you want, you can start again the replicatedMaster broker to see how the backup failbacks to the master.
 
 ```
-$ target/jboss-amq-7.0.0.redhat-1/instances/replicatedMaster/bin/artemis-service start
+$ target/amq-broker-7.0.1/instances/replicatedMaster/bin/artemis-service start
 ```
 
 The master will start and check if there is a live broker, when the backup detects that the master has become availbale again, it failsback going in a backup mode again.
