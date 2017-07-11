@@ -110,7 +110,7 @@ sh $AMQ_SERVER_BIN/artemis create --no-autotune --replicated --failover-on-shutd
 
 echo "  - Change default configuration to avoid duplicated live broker when failingback"
 echo
-sed -i'' -e 's/<master\/>/<master>\n\                <check-for-live-server>true<\/check-for-live-server>\n\            <\/master>/' $AMQ_MASTER_HOME/etc/broker.xml
+sed -i'' -e 's/<master\/>/<master>\                <check-for-live-server>true<\/check-for-live-server>\            <\/master>/' $AMQ_MASTER_HOME/etc/broker.xml
 
 echo "  - Changing default master clustering configuration"
 echo
@@ -124,7 +124,7 @@ sh $AMQ_SERVER_BIN/artemis create --no-autotune --replicated --failover-on-shutd
 
 echo "  - Change default configuration to automate failback"
 echo
-sed -i'' -e 's/<slave\/>/<slave>\n\                <allow-failback>true<\/allow-failback>\n\            <\/slave>/' $AMQ_SLAVE_HOME/etc/broker.xml
+sed -i'' -e 's/<slave\/>/<slave>\                <allow-failback>true<\/allow-failback>\            <\/slave>/' $AMQ_SLAVE_HOME/etc/broker.xml
 
 echo "  - Changing default master clustering configuration"
 echo
