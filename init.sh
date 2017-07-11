@@ -115,7 +115,8 @@ sed -i'' -e 's/<master\/>/<master>\                <check-for-live-server>true<\
 echo "  - Changing default master clustering configuration"
 echo
 sed -i'' -e '/<broadcast-groups>/,/<\/discovery-groups>/d' $AMQ_MASTER_HOME/etc/broker.xml
-sed -i'' -e '/<\/connector>/ a \        <connector name="discovery-connector">tcp://127.0.0.1:61716</connector>' $AMQ_MASTER_HOME/etc/broker.xml
+sed -i'' -e '/<\/connector>/ a \
+        <connector name="discovery-connector">tcp://127.0.0.1:61716</connector>' $AMQ_MASTER_HOME/etc/broker.xml
 sed -i'' -e 's/<discovery-group-ref discovery-group-name="dg-group1"\/>/<static-connectors>   <connector-ref>discovery-connector<\/connector-ref><\/static-connectors>/' $AMQ_MASTER_HOME/etc/broker.xml
 
 echo "  - Create Replicated Slave"
@@ -129,7 +130,8 @@ sed -i'' -e 's/<slave\/>/<slave>\                <allow-failback>true<\/allow-fa
 echo "  - Changing default master clustering configuration"
 echo
 sed -i'' -e '/<broadcast-groups>/,/<\/discovery-groups>/d' $AMQ_SLAVE_HOME/etc/broker.xml
-sed -i'' -e '/<\/connector>/ a \        <connector name="discovery-connector">tcp://127.0.0.1:61616</connector>' $AMQ_SLAVE_HOME/etc/broker.xml
+sed -i'' -e '/<\/connector>/ a \
+        <connector name="discovery-connector">tcp://127.0.0.1:61616</connector>' $AMQ_SLAVE_HOME/etc/broker.xml
 sed -i'' -e 's/<discovery-group-ref discovery-group-name="dg-group1"\/>/<static-connectors>   <connector-ref>discovery-connector<\/connector-ref><\/static-connectors>/' $AMQ_SLAVE_HOME/etc/broker.xml
 
 echo "  - Start up AMQ Master in the background"
