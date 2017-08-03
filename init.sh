@@ -1,22 +1,27 @@
 #!/bin/sh
+# Note everything is installed into the target directory, so now that we
+# have an easily repeatable installation of your project, you can throw away
+# the target directory at any time and run your init.sh to start over!
+#
+
 DEMO="JBoss AMQ 7 Replicated HA Demo"
-VERSION=7.0.1
 AUTHORS="Hugo Guerrero"
-PROJECT="git@github.com:hguerrero/amq-ha-replicated-demo.git"
-AMQ=amq-broker-7.0.1
-AMQ_BIN=amq-broker-7.0.1-bin.zip
-DEMO_HOME=./target
-AMQ_HOME=$DEMO_HOME/$AMQ
-AMQ_PROJECT=./project/failoverdemo70
-AMQ_SERVER_CONF=$AMQ_HOME/etc
-AMQ_SERVER_BIN=$AMQ_HOME/bin
-AMQ_INSTANCES=$AMQ_HOME/instances
+PROJECT="git@github.com:jbossdemocentral/amq-ha-replicated-demo.git"
+PRODUCT="Red Hat JBoss AMQ Broker"
+PRODUCT_HOME=./target/amq-broker-7.0.1
+SRC_DIR=./installs
+SUPPORT_DIR=./support
+PRJ_DIR=./projects
+INSTALLER=amq-broker-7.0.1-bin.zip
+VERSION=7.0.1
+
+AMQ_SERVER_CONF=$PRODUCT_HOME/etc
+AMQ_SERVER_BIN=$PRODUCT_HOME/bin
+AMQ_INSTANCES=$PRODUCT_HOME/instances
 AMQ_MASTER=replicatedMaster
 AMQ_SLAVE=replicatedSlave
 AMQ_MASTER_HOME=$AMQ_INSTANCES/$AMQ_MASTER
 AMQ_SLAVE_HOME=$AMQ_INSTANCES/$AMQ_SLAVE
-SRC_DIR=./installs
-PRJ_DIR=./projects/failoverdemo70
 
 # wipe screen.
 clear
@@ -43,7 +48,7 @@ echo "##                                                             ##"
 echo "##  brought to you by,                                         ##"
 echo "##                    ${AUTHORS}                            ##"
 echo "##                                                             ##"
-echo "##  ${PROJECT}        ##"
+echo "##  ${PROJECT} ##"
 echo "##                                                             ##"
 echo "#################################################################"
 echo
@@ -51,57 +56,41 @@ echo
 
 echo "  - Stop all existing AMQ processes..."
 echo
-jps -lm | grep artemis | grep -v grep | awk '{print $1}' | xargs -r kill -KILL
+jps -lm | grep artemis | awk '{print $1}' | if [[ $OSTYPE = "linux-gnu" ]]; then xargs -r kill -SIGTERM; else xargs kill -SIGTERM; fi
 
 
 # make some checks first before proceeding.
-if [[ -r $SRC_DIR/$AMQ_BIN || -L $SRC_DIR/$AMQ_BIN ]]; then
-		echo $DEMO AMQ is present...
+if [[ -r $SRC_DIR/$INSTALLER || -L $SRC_DIR/$INSTALLER ]]; then
+		echo "  - $PRODUCT is present..."
 		echo
 else
-		echo Need to download $AMQ_BIN package
-    echo from the Customer Support Portal and place it in the $SRC_DIR
-		echo directory to proceed...
+		echo Need to download $PRODUCT package from the Customer Support Portal
+		echo and place it in the $SRC_DIR directory to proceed...
 		echo
 		exit
 fi
 
 
-# Create the target directory if it does not already exist.
-if [ ! -x $DEMO_HOME ]; then
-		echo "  - creating the demo home directory..."
+# Remove old install if it exists.
+if [ -x $PRODUCT_HOME ]; then
+		echo "  - existing $PRODUCT install detected..."
 		echo
-		mkdir $DEMO_HOME
-else
-		echo "  - detected demo home directory, moving on..."
+		echo "  - moving existing $PRODUCT aside..."
 		echo
+		rm -rf $PRODUCT_HOME.OLD
+		mv $PRODUCT_HOME $PRODUCT_HOME.OLD
 fi
 
 
-# Move the old JBoss instance, if it exists, to the OLD position.
-if [ -x $AMQ_HOME ]; then
-		echo "  - existing JBoss AMQ detected..."
-		echo
-		echo "  - moving existing JBoss AMQ aside..."
-		echo
-		rm -rf $AMQ_HOME.OLD
-		mv $AMQ_HOME $AMQ_HOME.OLD
-
-		# Unzip the JBoss instance.
-		echo Unpacking JBoss AMQ $VERSION
-		echo
-		unzip -q -d $DEMO_HOME $SRC_DIR/$AMQ_BIN
-else
-		# Unzip the JBoss instance.
-		echo Unpacking new JBoss AMQ...
-		echo
-		unzip -q -d $DEMO_HOME $SRC_DIR/$AMQ_BIN
-fi
+# Run installer.
+echo "  - Unpacking $PRODUCT $VERSION"
+echo
+mkdir -p $PRODUCT_HOME && unzip -q -d $PRODUCT_HOME/.. $SRC_DIR/$INSTALLER
 
 
 echo "  - Making sure 'AMQ' for server is executable..."
 echo
-chmod u+x $AMQ_HOME/bin/artemis
+chmod u+x $PRODUCT_HOME/bin/artemis
 
 
 echo "  - Create Replicated Master"
@@ -189,5 +178,6 @@ echo
 sh $AMQ_MASTER_HOME/bin/artemis queue create --auto-create-address --address haQueue --name haQueue --preserve-on-no-consumers --durable --anycast --url tcp://localhost:61616
 
 
+echo
 echo "To stop the backgroud AMQ broker processes, please go to bin folders and execute 'artemis-service stop'"
 echo

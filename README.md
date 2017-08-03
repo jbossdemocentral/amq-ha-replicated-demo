@@ -12,7 +12,7 @@ Before failover, only the live server is serving the AMQ clients while the backu
 
 When using replication, the live and the backup servers do not share the same data directories, all data synchronization is done over the network. Therefore all (persistent) data received by the live server will be duplicated to the backup.
 
-![high availability diagram](docs/images/amq-ha-replicated.png?raw=true "HA Architecture Diagram")
+![high availability diagram](docs/demo-images/amq-ha-replicated.png?raw=true "HA Architecture Diagram")
 
 Notice that upon start-up the backup server will first need to synchronize all existing data from the live server before becoming capable of replacing the live server should it fail. So unlike when using shared storage, a replicating backup will not be a fully operational backup right after start-up, but only after it finishes synchronizing the data with its live server.
 
@@ -133,3 +133,13 @@ The master will start and check if there is a live broker, when the backup detec
 ## Contributing
 
 We welcome all forms of contribution (content, issues/bugs, feedback).
+
+## Supporting articles
+
+None yet...
+
+
+## Released versions
+
+See the tagged releases for the following versions of the product:
+
