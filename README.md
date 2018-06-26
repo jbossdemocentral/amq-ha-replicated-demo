@@ -49,7 +49,7 @@ $ sudo yum install java-1.8.0-openjdk-devel git
 
 ## Deployment
 
-Git clone this repository and then change directory to amq-ha-replicated-dem.
+Git clone this repository and then change directory to amq-ha-replicated-demo.
 
 Download AMQ 7 Broker from Red Hat Developer Portal: --[download here](https://developers.redhat.com/products/amq/download/)
 
@@ -76,7 +76,7 @@ After successfully deployed, you can test the failover
 To send messages to the master broker, execute the following command:
 
 ```
-$ target/amq-broker-7.0.1/instances/replicatedMaster/bin/artemis producer --message-count 10 --url "tcp://127.0.0.1:61616" --destination queue://haQueue
+$ target/amq-broker-7.1.1/instances/replicatedMaster/bin/artemis producer --message-count 10 --url "tcp://127.0.0.1:61616" --destination queue://haQueue
 ```
 
 #### Browse messages on Master
@@ -93,7 +93,7 @@ You will see the 10 messages send by the producer script.
 
 As the replicatedSlave broker is running as a backup broker for replicatedMaster, there are no active addresses or queues listening.
 
-* Open a web browser and navigate to the AMQ web console http://localhost:8261/hawtio
+* Open a web browser and navigate to the AMQ web console http://localhost:8261/console
 * In the left tree navigate to 127.0.0.1 > addresses > haQueue > queues > anycast > haQueue
 
 You will only see the information regarding the cluster broadcast configuration.
@@ -105,7 +105,7 @@ You will only see the information regarding the cluster broadcast configuration.
 To shutdown the master broker, execute the following command:
 
 ```
-$ target/amq-broker-7.0.1/instances/replicatedMaster/bin/artemis-service stop
+$ target/amq-broker-7.1.1/instances/replicatedMaster/bin/artemis-service stop
 ```
 
 While the master is shutting down, the backup broker will notice the disconnection from the master and bwill become live.
@@ -125,7 +125,7 @@ You will see the 10 messages send by the producer script to the master broker.
 If you want, you can start again the replicatedMaster broker to see how the backup failbacks to the master.
 
 ```
-$ target/amq-broker-7.0.1/instances/replicatedMaster/bin/artemis-service start
+$ target/amq-broker-7.1.1/instances/replicatedMaster/bin/artemis-service start
 ```
 
 The master will start and check if there is a live broker, when the backup detects that the master has become availbale again, it failsback going in a backup mode again.
