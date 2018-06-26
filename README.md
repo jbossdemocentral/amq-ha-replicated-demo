@@ -93,7 +93,7 @@ You will see the 10 messages send by the producer script.
 
 As the replicatedSlave broker is running as a backup broker for replicatedMaster, there are no active addresses or queues listening.
 
-* Open a web browser and navigate to the AMQ web console http://localhost:8261/hawtio
+* Open a web browser and navigate to the AMQ web console http://localhost:8261/console
 * In the left tree navigate to 127.0.0.1 > addresses > haQueue > queues > anycast > haQueue
 
 You will only see the information regarding the cluster broadcast configuration.
