@@ -8,12 +8,12 @@ DEMO="JBoss AMQ 7 Replicated HA Demo"
 AUTHORS="Hugo Guerrero"
 PROJECT="git@github.com:jbossdemocentral/amq-ha-replicated-demo.git"
 PRODUCT="Red Hat JBoss AMQ Broker"
-PRODUCT_HOME=./target/amq-broker-7.0.1
+PRODUCT_HOME=./target/amq-broker-7.2.1
 SRC_DIR=./installs
 SUPPORT_DIR=./support
 PRJ_DIR=./projects
-INSTALLER=amq-broker-7.0.1-bin.zip
-VERSION=7.0.1
+INSTALLER=amq-broker-7.2.1-bin.zip
+VERSION=7.2.1
 
 AMQ_SERVER_CONF=$PRODUCT_HOME/etc
 AMQ_SERVER_BIN=$PRODUCT_HOME/bin
