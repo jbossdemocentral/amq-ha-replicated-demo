@@ -83,7 +83,7 @@ $ target/amq-broker-7.2.1/instances/replicatedMaster/bin/artemis producer --mess
 
 To check the messages were successfully send to the broker, check the queue in the broker web console.
 
-* Open a web browser and navigate to the AMQ web console http://localhost:8161/hawtio
+* Open a web browser and navigate to the AMQ web console http://localhost:8161/console
 * In the left tree navigate to 127.0.0.1 > addresses > haQueue > queues > anycast > haQueue
 * Click on *Browse* (refresh if necessary)
 
@@ -93,7 +93,7 @@ You will see the 10 messages send by the producer script.
 
 As the replicatedSlave broker is running as a backup broker for replicatedMaster, there are no active addresses or queues listening.
 
-* Open a web browser and navigate to the AMQ web console http://localhost:8261/hawtio
+* Open a web browser and navigate to the AMQ web console http://localhost:8261/console
 * In the left tree navigate to 127.0.0.1 > addresses > haQueue > queues > anycast > haQueue
 
 You will only see the information regarding the cluster broadcast configuration.
@@ -114,7 +114,7 @@ While the master is shutting down, the backup broker will notice the disconnecti
 
 To check the messages were successfully replicated to the slave broker, check the queue in the slave broker web console.
 
-* Refresh the AMQ web console http://localhost:8261/hawtio
+* Refresh the AMQ web console http://localhost:8261/console
 * In the left tree navigate to 127.0.0.1 > addresses > haQueue > queues > anycast > haQueue
 * Click on *Browse* (refresh if necessary)
 
